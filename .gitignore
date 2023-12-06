@@ -2,3 +2,7 @@
 .DS_Store
 Aesthetic Assessment/CADB_Dataset/Visualization
 Aesthetic Assessment/CADB_Dataset/examples
+
+Object Detection/output/
+Classification/__pycache__/
+Object Detection/src/__pycache__/
