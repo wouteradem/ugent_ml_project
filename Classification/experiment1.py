@@ -54,9 +54,10 @@ if __name__ == '__main__':
     # Get model weights.
     weights = torchvision.models.EfficientNet_B1_Weights.DEFAULT
 
-    # Get model transforms.
+    # Set model transforms.
     if cfg.transform_type == 'auto':
-        auto_transforms = weights.transforms()
+        train_data = torchvision.datasets.ImageFolder(cfg.train_dir, transform=weights.transforms())
+        test_data = torchvision.datasets.ImageFolder(cfg.test_dir, transform=weights.transforms())
     elif cfg.transform_type == 'manual':
         manual_transforms = torchvision.transforms.Compose([
             torchvision.transforms.Resize((224, 224)),
@@ -66,13 +67,23 @@ if __name__ == '__main__':
                 std=[0.229, 0.224, 0.225]
             )
         ])
+        train_data = torchvision.datasets.ImageFolder(cfg.train_dir, transform=manual_transforms)
+        test_data = torchvision.datasets.ImageFolder(cfg.test_dir, transform=manual_transforms)
     elif cfg.transform_type == 'augmentation':
-        pass
+        augmented_transforms = torchvision.transforms.Compose([
+            torchvision.transforms.Resize((224, 224)),
+            torchvision.transforms.TrivialAugmentWide(num_magnitude_bins=31),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225]
+            )
+        ])
 
     # Get DataLoaders and classification labels.
     train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(train_dir=cfg.train_dir,
                                                                                    test_dir=cfg.test_dir,
-                                                                                   transform=auto_transforms,
+                                                                                   transform=augmented_transforms,
                                                                                    batch_size=32)
     # Get model.
     model = torchvision.models.efficientnet_b1(weights)

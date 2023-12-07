@@ -1,0 +1,34 @@
+#!/bin/bash -l
+#PBS -l nodes=1:ppn=1
+#PBS -l walltime=1:00:00
+
+# In the comments above, we request 1 node with 1 core (ppn = Processors Per Node)
+# and 1 hour of wallclock time.
+
+# Using -v, we can pass arguments that will be filled in in the variables in the
+# script. For example:
+#
+# $ qsub run_demo.pbs -v cluster=doduo
+#
+# will make sure the variable $cluster contains the value "doduo" within the script.
+
+# Load Python 3.10 as a module
+module load Python/3.10.4-GCCcore-11.3.0
+
+# Navigate to the folder "demo" in the Data directory
+pushd $VSC_DATA/demo
+
+# If the cluster argument is empty, throw an error
+if [ -z $cluster ]; then
+	echo "Provide a cluster using -v."
+	exit 1
+fi
+
+# This is the name of the virtual environment that we constructed in install_venv.pbs
+VENV_NAME="venv_$cluster"
+
+# Activate the virtual environment
+source $VENV_NAME/bin/activate
+
+# Run the Python script
+python demo.py

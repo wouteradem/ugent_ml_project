@@ -1,0 +1,42 @@
+#!/bin/bash -l
+#PBS -l walltime=1:00:00
+#PBS -l mem=16gb
+
+# In the comments above, we request 1 hour of wallclock time and 16GB RAM.
+
+# Using -v, we can pass arguments that will be filled in in the variables in the
+# script. For example:
+#
+# $ qsub install_venv.pbs -v cluster=doduo
+#
+# will make sure the variable $cluster contains the value "doduo" within the script.
+
+# Load Python 3.10 as a module
+module load Python/3.10.4-GCCcore-11.3.0
+
+# Navigate to the folder "demo" in the Data directory
+pushd $VSC_DATA/demo
+
+# If the cluster argument is empty, throw an error
+if [ -z $cluster ]; then
+	echo "Provide a cluster argument using -v, e.g.: qsub install_venv -v cluster=donphan" 1>&2
+	exit 1
+fi
+
+# This is the name of the virtual environment we will construct.
+# The name depends on the chosen cluster.
+VENV_NAME="venv_$cluster"
+
+# If this virtual environment already exists, delete it.
+if [ -d $VENV_NAME ];
+then
+	rm -r $VENV_NAME
+fi
+
+# Create the virtual environment and install packages
+# You can also use a requirements.txt file for this:
+# https://packaging.python.org/en/latest/guides/installing-using-pip-and-virtual-environments/#using-requirements-files
+python3 -m venv $VENV_NAME
+source $VENV_NAME/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
