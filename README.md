@@ -11,6 +11,7 @@ All the applications are programmed in Python using the PyTorch library.
 ## Running the code in the UGent GPU cluster
 
 ### Preparation:
+* Create directory ``$VSC_DATA/ml``
 * ``scp`` the ``src`` and ``*.pbs`` files to the login node and make sure all the data is copied to the data folder ``TODO``
 * ``$ gsub install_venv.pbs -v cluster=joltik``, to connect to the GPU cluster called ``joltik`` and create a virutal environment called ``venv_joltik``. This will also install all the required Python packages that are listed in the ``requirements.txt`` file.
 
