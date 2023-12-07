@@ -1,5 +1,5 @@
 #!/bin/bash -l
-#PBS -l nodes=1:ppn=1
+#PBS -l nodes=1:ppn=quarter:gpus=1
 #PBS -l walltime=1:00:00
 
 # In the comments above, we request 1 node with 1 core (ppn = Processors Per Node)
@@ -8,7 +8,7 @@
 # Using -v, we can pass arguments that will be filled in in the variables in the
 # script. For example:
 #
-# $ qsub run_demo.pbs -v cluster=doduo
+# $ qsub run_demo.pbs -v cluster=joltik
 #
 # will make sure the variable $cluster contains the value "doduo" within the script.
 

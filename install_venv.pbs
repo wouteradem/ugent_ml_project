@@ -7,19 +7,17 @@
 # Using -v, we can pass arguments that will be filled in in the variables in the
 # script. For example:
 #
-# $ qsub install_venv.pbs -v cluster=doduo
-#
-# will make sure the variable $cluster contains the value "doduo" within the script.
+# $ qsub install_venv.pbs -v cluster=joltik
 
 # Load Python 3.10 as a module
 module load Python/3.10.4-GCCcore-11.3.0
 
 # Navigate to the folder "demo" in the Data directory
-pushd $VSC_DATA/demo
+pushd $VSC_DATA/ml
 
 # If the cluster argument is empty, throw an error
 if [ -z $cluster ]; then
-	echo "Provide a cluster argument using -v, e.g.: qsub install_venv -v cluster=donphan" 1>&2
+	echo "Provide a cluster argument using -v, e.g.: qsub install_venv -v cluster=joltik" 1>&2
 	exit 1
 fi
 
