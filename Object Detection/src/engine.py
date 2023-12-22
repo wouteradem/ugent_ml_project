@@ -15,7 +15,6 @@ plt.style.use('ggplot')
 
 # function for running training iterations
 def train(train_data_loader, model):
-    print('Training')
     global train_itr
     global train_loss_list
 
@@ -49,7 +48,6 @@ def train(train_data_loader, model):
 
 # function for running validation iterations
 def validate(valid_data_loader, model):
-    print('Validating')
     global val_itr
     global val_loss_list
 
@@ -92,8 +90,6 @@ if __name__ == '__main__':
     val_loss_hist = Averager()
     train_itr = 1
     val_itr = 1
-    # train and validation loss lists to store loss values of all...
-    # ... iterations till ena and plot graphs for all iterations
     train_loss_list = []
     val_loss_list = []
 
@@ -155,5 +151,6 @@ if __name__ == '__main__':
             torch.save(model.state_dict(), f"{OUT_DIR}/model{epoch + 1}.pth")
 
         plt.close('all')
+
         # sleep for 5 seconds after each epoch
         time.sleep(5)

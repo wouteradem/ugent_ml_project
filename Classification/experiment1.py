@@ -44,7 +44,7 @@ def plot_loss_curves(results):
     plt.title("Accuracy")
     plt.xlabel("Epochs")
     plt.legend()
-    plt.show()
+    plt.savefig("loss_curve.svg", dpi=150)
 
 
 if __name__ == '__main__':
@@ -56,10 +56,11 @@ if __name__ == '__main__':
 
     # Set model transforms.
     if cfg.transform_type == 'auto':
-        train_data = torchvision.datasets.ImageFolder(cfg.train_dir, transform=weights.transforms())
-        test_data = torchvision.datasets.ImageFolder(cfg.test_dir, transform=weights.transforms())
+        transforms = weights.transforms()
+        train_data = torchvision.datasets.ImageFolder(cfg.train_dir, transform=transforms)
+        test_data = torchvision.datasets.ImageFolder(cfg.test_dir, transform=transforms)
     elif cfg.transform_type == 'manual':
-        manual_transforms = torchvision.transforms.Compose([
+        transforms = torchvision.transforms.Compose([
             torchvision.transforms.Resize((224, 224)),
             torchvision.transforms.ToTensor(),
             torchvision.transforms.Normalize(
@@ -67,10 +68,10 @@ if __name__ == '__main__':
                 std=[0.229, 0.224, 0.225]
             )
         ])
-        train_data = torchvision.datasets.ImageFolder(cfg.train_dir, transform=manual_transforms)
-        test_data = torchvision.datasets.ImageFolder(cfg.test_dir, transform=manual_transforms)
+        train_data = torchvision.datasets.ImageFolder(cfg.train_dir, transform=transforms)
+        test_data = torchvision.datasets.ImageFolder(cfg.test_dir, transform=transforms)
     elif cfg.transform_type == 'augmentation':
-        augmented_transforms = torchvision.transforms.Compose([
+        transforms = torchvision.transforms.Compose([
             torchvision.transforms.Resize((224, 224)),
             torchvision.transforms.TrivialAugmentWide(num_magnitude_bins=31),
             torchvision.transforms.ToTensor(),
@@ -83,7 +84,7 @@ if __name__ == '__main__':
     # Get DataLoaders and classification labels.
     train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(train_dir=cfg.train_dir,
                                                                                    test_dir=cfg.test_dir,
-                                                                                   transform=augmented_transforms,
+                                                                                   transform=transforms,
                                                                                    batch_size=32)
     # Get model.
     model = torchvision.models.efficientnet_b1(weights)
@@ -116,7 +117,10 @@ if __name__ == '__main__':
 
     # Define loss and optimizer.
     loss_fn = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=cfg.learning_rate)
+    if cfg.optimizer == 'adam':
+        optimizer = torch.optim.Adam(model.parameters(), lr=cfg.learning_rate)
+    elif cfg.optimizer == 'SGD':
+        optimizer = torch.optim.SGD(model.parameters(), lr=cfg.learning_rate, momentum=0.9, weight_decay=0.0005)
 
     # Set random seeds.
     torch.manual_seed(cfg.seed)

@@ -12,8 +12,8 @@
 # Load Python 3.10 as a module
 module load Python/3.10.4-GCCcore-11.3.0
 
-# Navigate to the folder "demo" in the Data directory
-pushd $VSC_DATA/ml
+# Navigate to the folder "ml" in the Data directory
+pushd /Users/wouteradem/Desktop/UGent-ML-project/ml
 
 # If the cluster argument is empty, throw an error
 if [ -z $cluster ]; then
